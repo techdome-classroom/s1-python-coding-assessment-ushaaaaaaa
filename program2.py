@@ -28,9 +28,4 @@ def decode_message(s: str, p: str) -> bool:
     # Start matching from the beginning of both the message and pattern
     return match(0, 0)
 
-# Example usage
-print(decode_message("aa", "a"))     # Expected: False
-print(decode_message("aa", "*"))     # Expected: True
-print(decode_message("cb", "?a"))    # Expected: False
-print(decode_message("abc", "?b?")) # Expected: True
-print(decode_message("acdcb", "a*c?b")) # Expected: False
+
