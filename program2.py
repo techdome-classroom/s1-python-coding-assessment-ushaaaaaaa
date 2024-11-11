@@ -1,19 +1,29 @@
 def decode_message(s: str, p: str) -> bool:
-    m, n = len(s), len(p)
-    dp = [[False] * (n + 1) for _ in range(m + 1)]
-    dp[0][0] = True  # Both message and pattern are empty
+    memo = {}
 
-    # Initialize the first row (pattern matches an empty message)
-    for j in range(1, n + 1):
-        if p[j - 1] == '*':
-            dp[0][j] = dp[0][j - 1]
+    def match(i, j):
+        if (i, j) in memo:
+            return memo[(i, j)]
 
-    # Fill the DP table
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if p[j - 1] == '*':
-                dp[i][j] = dp[i - 1][j] or dp[i][j - 1]
-            elif p[j - 1] == '?' or s[i - 1] == p[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1]
+        if i == len(s) and j == len(p):
+            return True
+        if j == len(p):
+            return False
 
-    return dp[m][n]
+        if p[j] == '*':
+            match_result = match(i, j + 1) or (i < len(s) and match(i + 1, j))
+        else:
+            match_result = i < len(s) and (p[j] == s[i] or p[j] == '?') and match(i + 1, j + 1)
+
+        memo[(i, j)] = match_result
+        return match_result
+
+    return match(0, 0)
+
+input_line = input(" ")
+message, pattern = input_line.split()
+
+if decode_message(message, pattern):
+    print("True")
+else:
+    print("False")
