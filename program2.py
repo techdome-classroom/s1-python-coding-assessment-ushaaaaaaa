@@ -28,4 +28,3 @@ def decode_message(s: str, p: str) -> bool:
     # Start matching from the beginning of both the message and pattern
     return match(0, 0)
 
-
