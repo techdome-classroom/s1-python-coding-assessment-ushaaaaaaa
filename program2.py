@@ -36,4 +36,4 @@ message, pattern = input_line.split()
 if decode_message(message, pattern):
     print("True")
 else:
-    print("False")
+        print("False")
