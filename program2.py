@@ -1,29 +1,39 @@
 def decode_message(s: str, p: str) -> bool:
-    # Initialize the DP table
-    dp = [[False] * (len(s) + 1) for _ in range(len(p) + 1)]
-    dp[0][0] = True  # Empty pattern matches empty string
+    memo = {}
 
-    # Fill in the first row where pattern has '*'
-    for i in range(1, len(p) + 1):
-        if p[i - 1] == '*':
-            dp[i][0] = dp[i - 1][0]
-    
-    # Fill the rest of the DP table
-    for i in range(1, len(p) + 1):
-        for j in range(1, len(s) + 1):
-            if p[i - 1] == '*':
-                # Star can match zero or more characters
-                dp[i][j] = dp[i - 1][j] or dp[i][j - 1]
-            elif p[i - 1] == '?' or p[i - 1] == s[j - 1]:
-                # Match single character or question mark
-                dp[i][j] = dp[i - 1][j - 1]
+    def match(i, j):
+        # Check if result is already computed
+        if (i, j) in memo:
+            return memo[(i, j)]
 
-    # Result is in the bottom-right corner of the table
-    return dp[len(p)][len(s)]
+        # If we've reached the end of both the message and pattern, it's a match
+        if i == len(s) and j == len(p):
+            return True
+        # If we've reached the end of the pattern but not the message, it's not a match
+        if j == len(p):
+            return False
 
-# Example usage
-print(decode_message("aa", "a"))     # Output: False
-print(decode_message("aa", "*"))     # Output: True
-print(decode_message("cb", "?a"))    # Output: False
-print(decode_message("abc", "?b?")) # Output: True
-print(decode_message("acdcb", "a*c?b")) # Output: False
+        # Handle '*' in the pattern
+        if p[j] == '*':
+            # '*' can either match no characters in s or at least one character
+            match_result = match(i, j + 1) or (i < len(s) and match(i + 1, j))
+        else:
+            # Match single character or ?
+            match_result = i < len(s) and (p[j] == s[i] or p[j] == '?') and match(i + 1, j + 1)
+
+        # Memoize and return the result
+        memo[(i, j)] = match_result
+        return match_result
+
+    # Start matching from the beginning of both the message and pattern
+    return match(0, 0)
+
+# Take user input in a single line and split it into message and pattern
+input_line = input(" ")
+message, pattern = input_line.split()
+
+# Check if the pattern matches the message and print the result
+if decode_message(message, pattern):
+    print("True")
+else:
+    print("False")
