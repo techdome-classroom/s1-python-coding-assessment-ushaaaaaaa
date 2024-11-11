@@ -1,51 +1,55 @@
 class Solution:
-    def getTotalIsles(self, grid: list[list[str]]) -> int:
-        if not grid or not grid[0]:
+    def getTotalIsles(self, map_grid: list[list[str]]) -> int:
+        # Return 0 if map is empty
+        if not map_grid or not map_grid[0]:
             return 0
 
-        rows, cols = len(grid), len(grid[0])
-        visited = [[False for _ in range(cols)] for _ in range(rows)]
+        # Initialize dimensions and visited cells tracker
+        num_rows, num_cols = len(map_grid), len(map_grid[0])
+        visited_cells = [[False for _ in range(num_cols)] for _ in range(num_rows)]
 
-        def dfs(r, c):
-            # Boundary check or if it's water or already visited
-            if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] == 'W' or visited[r][c]:
+        # Helper function to explore connected land cells
+        def explore_island(row, col):
+            # Stop if out of bounds, cell is water, or already visited
+            if row < 0 or row >= num_rows or col < 0 or col >= num_cols or map_grid[row][col] == 'W' or visited_cells[row][col]:
                 return
-            # Mark the cell as visited
-            visited[r][c] = True
-            # Check all four directions (up, down, left, right)
-            dfs(r + 1, c)  # down
-            dfs(r - 1, c)  # up
-            dfs(r, c + 1)  # right
-            dfs(r, c - 1)  # left
+            # Mark current cell as visited
+            visited_cells[row][col] = True
+            # Recursively explore all adjacent cells (up, down, left, right)
+            explore_island(row + 1, col)  # Down
+            explore_island(row - 1, col)  # Up
+            explore_island(row, col + 1)  # Right
+            explore_island(row, col - 1)  # Left
 
-        island_count = 0
-        for r in range(rows):
-            for c in range(cols):
-                if grid[r][c] == 'L' and not visited[r][c]:
-                    # New island found, initiate DFS
-                    dfs(r, c)
-                    island_count += 1
+        # Initialize island counter
+        total_islands = 0
+        # Iterate over each cell in the map grid
+        for row in range(num_rows):
+            for col in range(num_cols):
+                # If an unvisited land cell is found, start exploring a new island
+                if map_grid[row][col] == 'L' and not visited_cells[row][col]:
+                    explore_island(row, col)
+                    total_islands += 1  # Count the new island
 
-        return island_count
+        return total_islands
 
 # Example usage
 solution = Solution()
 
 # Example 1
-dispatch1 = [
+map1 = [
     ["L", "L", "L", "L", "W"],
     ["L", "L", "W", "L", "W"],
     ["L", "L", "W", "W", "W"],
     ["W", "W", "W", "W", "W"],
 ]
-print(solution.getTotalIsles(dispatch1))  # Output: 1
+print(solution.getTotalIsles(map1))  # Output: 1
 
 # Example 2
-dispatch2 = [
+map2 = [
     ["L", "L", "W", "W", "W"],
     ["L", "L", "W", "W", "W"],
     ["W", "W", "L", "W", "W"],
     ["W", "W", "W", "L", "L"],
 ]
-print(solution.getTotalIsles(dispatch2))  # Output: 3
-
+print(solution.getTotalIsles(map2))  # Output: 3
