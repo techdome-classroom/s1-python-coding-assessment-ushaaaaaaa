@@ -2,35 +2,38 @@ def decode_message(s: str, p: str) -> bool:
     memo = {}
 
     def match(i, j):
-        # Check if we've already computed the result for this state
+        # Check if result is already computed
         if (i, j) in memo:
             return memo[(i, j)]
-        
-        # If we reach the end of both the message and pattern, it's a match
+
+        # If we've reached the end of both the message and pattern, it's a match
         if i == len(s) and j == len(p):
             return True
-        # If we reach the end of the pattern but not the message, it's not a match
+        # If we've reached the end of the pattern but not the message, it's not a match
         if j == len(p):
             return False
-        
-        # If the pattern contains '*'
+
+        # Handle '*' in the pattern
         if p[j] == '*':
-            # '*' can match zero characters or one/more characters in `s`
+            # '*' can either match no characters in s or at least one character
             match_result = match(i, j + 1) or (i < len(s) and match(i + 1, j))
         else:
-            # Match single character or '?'
+            # Match single character or ?
             match_result = i < len(s) and (p[j] == s[i] or p[j] == '?') and match(i + 1, j + 1)
-        
-        # Store result in memoization table
+
+        # Memoize and return the result
         memo[(i, j)] = match_result
         return match_result
 
     # Start matching from the beginning of both the message and pattern
     return match(0, 0)
 
-# Example usage
-print(decode_message("aa", "a"))     # Output: False
-print(decode_message("aa", "*"))     # Output: True
-print(decode_message("cb", "?a"))    # Output: False
-print(decode_message("abc", "?b?")) # Output: True
-print(decode_message("acdcb", "a*c?b")) # Output: False
+# Take user input in a single line and split it into message and pattern
+input_line = input(" ")
+message, pattern = input_line.split()
+
+# Check if the pattern matches the message and print the result
+if decode_message(message, pattern):
+    print("True")
+else:
+    print("False")
