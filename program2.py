@@ -32,5 +32,5 @@ def decode_message(s: str, p: str) -> bool:
 print(decode_message("aa", "a"))     # Output: False
 print(decode_message("aa", "*"))     # Output: True
 print(decode_message("cb", "?a"))    # Output: False
-print(decode_message("adceb", "*a*b")) # Output: True
+print(decode_message("abc", "?b?")) # Output: True
 print(decode_message("acdcb", "a*c?b")) # Output: False
