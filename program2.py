@@ -18,4 +18,4 @@ def decode_message( s: str, p: str) -> bool:
             else:
                 dp[i][j] = dp[i - 1][j - 1] and s[i - 1] == p[j - 1]
 
-    return dp[m][n]
+    return dp[m][n]
